@@ -17,6 +17,17 @@
                 <a href="{% url "food:create_item" %}" class="nav-item nav-link text-primary">ADD Item</a>
                 <a href="#" class="nav-item nav-link text-primary">Delete Item</a>
                 <a href="#" class="nav-item nav-link text-primary">View Item</a>
+                {% if user.is_authenticated %}
+    <form action="{% url 'logout' %}" method="post" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit" class="nav-item nav-link text-primary" style="border: none; background: none; cursor: pointer;">Logout</button>
+    </form>
+    <a href="{% url 'profile' %}" class="nav-item nav-link text-primary">profile</a>
+{% else %}
+    <a href="{% url 'login' %}" class="nav-item nav-link text-primary">Login</a>
+{% endif %}
+
+
             </div>
         </div>
     </nav>
