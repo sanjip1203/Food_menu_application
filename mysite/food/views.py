@@ -3,20 +3,35 @@ from django.http import HttpResponse
 from .models import Item
 from django.template import loader
 from .forms import ItemForm
+from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView
+from django.views.generic.edit import CreateView
 # Create your views here.
-def index(request):
-    item_list =Item.objects.all()
-    context ={
-        'item_list':item_list,
-        
-    }
-    return render(request,'food/index.html',context)
+
+## function base 
+# def index(request):
+#     item_list =Item.objects.all()
+#     context ={
+#         'item_list':item_list,   
+#     }
+#     return render(request,'food/index.html',context)
+
+## class based 
+class IndexClassView(ListView):
+    model =Item
+    template_name='food/index.html'
+    context_object_name='item_list'
+    
 
 
 def item(request):
     return HttpResponse ("this is items ")
 
-
+class food_detail(DetailView):
+    model = Item
+    template_name='food/detail.html'
+    
+    
 def detail(request,item_id):
     item = Item.objects.get(pk=item_id)
     context ={
@@ -33,6 +48,17 @@ def create_item(request):
         return redirect('food:index')
     return render(request,'food/item-form.html',{'form':form})
     
+    
+## Create your views  here 
+class CreateItem(CreateView):
+    model=Item
+    fields =['item_name','item_desc','item_price','item_image']
+    def form_valid(self, form):
+        form.instance.user_name = self.request.user
+        return super().form_valid(form)
+    template_name='food/item-form.html'
+    
+
 def update_item(request,id):
     item = Item.objects.get(id=id)
     form = ItemForm(request.POST or None, instance=item)
